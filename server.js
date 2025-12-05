@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors')
 const mongoose = require('mongoose');
 
 // Set up all variables in the .env file
@@ -20,6 +21,7 @@ const app = express();
 app.use(morgan('dev')); // logger
 app.use(express.json()); // body parser
 require('./config/passport');
+app.use(cors({origin: process.env.FRONTEND_URL})) // Allow cross origin from frontend
 
 // ========= Routes ======================
 app.use('/api/users', require('./routes/userRoutes'));
