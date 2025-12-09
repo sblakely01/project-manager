@@ -33,54 +33,78 @@ taskRouter.use(verifyProjectOwnership);
  * GET /api/projects/:projectId/tasks
  */
 taskRouter.get("/", async (req, res) => {
-    const tasks = await Task.find({ project: req.project._id});
-    res.json(tasks);
+    try {
+        const tasks = await Task.find({ project: req.project._id});
+        res.json(tasks);
+    } catch (error) {
+        console.error(error)
+        res.status(500).strictContentLength({ error: message.error})
+    }
+
 })
 
 /**
  * POST /api/projects/:projectId/tasks
  */
 taskRouter.post("/", async (req, res) => {
-   const newTask = await Task.create({
-    ...req.body,
-    project: req.project._id    
-   })
-   res.status(201).json(newTask)
+    try {
+        const newTask = await Task.create({
+            ...req.body,
+            project: req.project._id    
+        })
+        res.status(201).json(newTask)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message})
+    }
+
 })
 
 /**
  * PUT /api/projects/:projectId/tasks/:taskId
  */
 taskRouter.put("/:taskId", async (req, res) => {
-    const updatedTask = await Task.findOneAndUpdate({
-        _id: req.params.taskId,
-        project: req.project._id
-    },
-    req.body,
-    {new: true}
-    )
+    try {
+        const updatedTask = await Task.findOneAndUpdate({
+            _id: req.params.taskId,
+            project: req.project._id
+        },
+        req.body,
+        {new: true}
+        )
 
-    if (!updatedTask) {
-        return res.status(404)
-        .json({message: `Task with id: ${req.params.taskId} not found!`})
+        if (!updatedTask) {
+            return res.status(404)
+            .json({message: `Task with id: ${req.params.taskId} not found!`})
+        }
+        res.json(updatedTask)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message})
     }
-    res.json(updatedTask)
+
 })
 
 /**
  * DELETE /api/projects/:projectId/tasks/:taskId
  */
 taskRouter.delete("/:taskId", async (req, res) => {
-  const deleted = await Task.findOneAndDelete({
-    _id: req.params.taskId,
-    project: req.project._id,
-  });
+    try {
+        const deleted = await Task.findOneAndDelete({
+            _id: req.params.taskId,
+            project: req.project._id,
+        });
 
-  if (!deleted) {
-    return res.status(404).json({ message: "Task not found in this project" });
-  }
+        if (!deleted) {
+            return res.status(404).json({ message: "Task not found in this project" });
+        }
 
-  res.json({ message: "Task deleted" });
+        res.json({ message: "Task deleted" });
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message})
+    }
+
 });
 
 module.exports = taskRouter;
