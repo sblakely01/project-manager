@@ -4,7 +4,7 @@ const Project = require("../models/Project");
 
 const projectRouter = express.Router();
 
-// Protects all rotes in this router
+// Protects all routes in this router
 projectRouter.use(authMiddleware);
 
 /**

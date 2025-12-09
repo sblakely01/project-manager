@@ -26,6 +26,7 @@ app.use(cors({origin: process.env.FRONTEND_URL})) // Allow cross origin from fro
 // ========= Routes ======================
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
+app.use('/api/projects/:projectId/tasks', require('./routes/taskRoutes'))
 
 // Use this route to setup the API documentation
 app.get('/', (req, res) => {
